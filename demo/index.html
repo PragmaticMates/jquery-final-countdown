@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>	
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="Pragmatic Mates s.r.o. - http://pragmaticmates.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="http://fonts.googleapis.com/css?family=Raleway:400,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/demo.css">
+
+	<title>jQuery Final Countdown Plugin</title>
+</head>
+
+<body>
+
+<div class="countdown-container container">
+    <div class="clock row">
+        <div class="clock-item clock-days countdown-time-value col-sm-3">
+            <div class="wrap">
+                <div class="inner">
+                    <div id="canvas_days" class="clock-canvas"></div>
+
+                    <div class="text">
+                        <p class="val">0</p>
+                        <p class="type_days type-time">DAYS</p>
+                    </div><!-- /.text -->
+                </div><!-- /.inner -->
+            </div><!-- /.wrap -->
+        </div><!-- /.clock-item -->
+
+        <div class="clock-item clock-hours countdown-time-value col-sm-3">
+            <div class="wrap">
+                <div class="inner">
+                    <div id="canvas_hours" class="clock-canvas"></div>
+
+                    <div class="text">
+                        <p class="val">0</p>
+                        <p class="type_hours type-time">HOURS</p>
+                    </div><!-- /.text -->
+                </div><!-- /.inner -->
+            </div><!-- /.wrap -->
+        </div><!-- /.clock-item -->
+
+        <div class="clock-item clock-minutes countdown-time-value col-sm-3">
+            <div class="wrap">
+                <div class="inner">
+                    <div id="canvas_minutes" class="clock-canvas"></div>
+
+                    <div class="text">
+                        <p class="val">0</p>
+                        <p class="type_minutes type-time">MINUTES</p>
+                    </div><!-- /.text -->
+                </div><!-- /.inner -->
+            </div><!-- /.wrap -->
+        </div><!-- /.clock-item -->
+
+        <div class="clock-item clock-seconds countdown-time-value col-sm-3">
+            <div class="wrap">
+                <div class="inner">
+                    <div id="canvas_seconds" class="clock-canvas"></div>
+
+                    <div class="text">
+                        <p class="val">0</p>
+                        <p class="type_seconds type-time">SECONDS</p>
+                    </div><!-- /.text -->
+                </div><!-- /.inner -->
+            </div><!-- /.wrap -->
+        </div><!-- /.clock-item -->
+    </div><!-- /.clock -->
+</div><!-- /.countdown-wrapper -->
+
+
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/kinetic.js"></script>
+<script type="text/javascript" src="../jquery.final-countdown.js"></script>
+<script type="text/javascript">
+	$('.countdown').final_countdown({});
+</script>
+
+</body>
+</html>
