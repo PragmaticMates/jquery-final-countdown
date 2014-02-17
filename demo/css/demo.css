@@ -4,6 +4,7 @@ html, body {
 
 html {
 	background-image: url('../img/sample.jpg');
+	background-position: center center;
 	background-repeat: no-repeat;
 	background-size: cover;	
 }
@@ -49,4 +50,16 @@ body {
 	text-align: center;
 	text-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
 	width: 100%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+	.clock-item {
+		margin-bottom: 30px;		
+	}
+}
+
+@media (max-width: 767px) {
+	.clock-item {
+		margin: 0px 30px 30px 30px;
+	}
 }

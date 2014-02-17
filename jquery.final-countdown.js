@@ -15,8 +15,12 @@
     var element;
 
     $(window).load(updateCircles);
-    $(window).on("redraw",function(){ switched=false; updateCircles(); }); // An event to listen for
-    $(window).on("resize", updateCircles);
+    $(window).on('redraw', function() { 
+    	switched = false; 
+    	updateCircles(); 
+    }); 
+
+    $(window).on('resize', updateCircles);
 
     $.fn.final_countdown = function(options) {
         element = $(this);
@@ -60,7 +64,7 @@
         startCounters();                        
     };
 
-    function updateCircles() {        
+    function updateCircles() {     
         layerSeconds.draw();
         layerMinutes.draw();
         layerHours.draw();
@@ -91,7 +95,8 @@
         });        
 
         circleSeconds = new Kinetic.Shape({
-            drawFunc: function(context) {                     
+            drawFunc: function(context) {     
+            	var seconds_width = $('#' + settings.selectors.canvas_seconds).width()                
                 var radius = seconds_width / 2 - settings.seconds.borderWidth / 2;
                 var x = seconds_width / 2;
                 var y = seconds_width / 2;     
@@ -120,6 +125,7 @@
 
         circleMinutes = new Kinetic.Shape({
             drawFunc: function(context) {     
+            	var minutes_width = $('#' + settings.selectors.canvas_minutes).width();        
                 var radius = minutes_width / 2 - settings.minutes.borderWidth / 2;
                 var x = minutes_width / 2;
                 var y = minutes_width / 2;
@@ -149,6 +155,7 @@
 
         circleHours = new Kinetic.Shape({
             drawFunc: function(context) {
+            	var hours_width = $('#' + settings.selectors.canvas_hours).width();
                 var radius = hours_width / 2 - settings.hours.borderWidth/2;
                 var x = hours_width / 2;
                 var y = hours_width / 2;
@@ -178,6 +185,7 @@
 
         circleDays = new Kinetic.Shape({
             drawFunc: function(context) {
+            	var days_width = $('#' + settings.selectors.canvas_days).width();
                 var radius = days_width/2 - settings.days.borderWidth/2;
                 var x = days_width / 2;
                 var y = days_width / 2;                
