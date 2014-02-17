@@ -22,14 +22,6 @@
 
     var element;
 
-    $(window).load(updateCircles);
-    $(window).on('redraw', function() { 
-    	switched = false; 
-    	updateCircles(); 
-    }); 
-
-    $(window).on('resize', updateCircles);
-
     $.fn.final_countdown = function(options) {
         element = $(this);
 
@@ -67,10 +59,20 @@
 
         settings = $.extend({}, defaults, options);
 
+        responsive();
         dispatchTimer();
         prepareCounters();
         startCounters();                        
     };
+
+    function responsive() {
+        $(window).load(updateCircles);
+        $(window).on('redraw', function() { 
+            switched = false; 
+            updateCircles(); 
+        }); 
+        $(window).on('resize', updateCircles);
+    }
 
     function updateCircles() {     
         layerSeconds.draw();
