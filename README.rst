@@ -13,7 +13,9 @@ Javascript Code
 ::
 
 	$(document).ready(function() {
-		$('.countdown').final_countdown({});
+		$('.countdown').final_countdown({}, function() {
+			// Finish callback
+		});
 	});
 
 HTML Template

@@ -21,8 +21,9 @@
     var layerDays;
 
     var element;
+    var callbackFunction;
 
-    $.fn.final_countdown = function(options) {
+    $.fn.final_countdown = function(options, callback) {
         element = $(this);
 
         var defaults = $.extend({
@@ -58,6 +59,10 @@
         }, options);
 
         settings = $.extend({}, defaults, options);
+
+        if (typeof callback == 'function') { // make sure the callback is a function
+            callbackFunction = callback;        
+        }
 
         responsive();
         dispatchTimer();
@@ -170,8 +175,8 @@
                 var x = hours_width / 2;
                 var y = hours_width / 2;
 
-                context.beginPath();
-                context.arc(x, y, radius, convertToDeg(0), convertToDeg(timer.hours * 15));
+                context.beginPath();                
+                context.arc(x, y, radius, convertToDeg(0), convertToDeg(timer.hours * 360 / 24));
                 context.fillStrokeShape(this);
 
                 $(settings.selectors.value_hours).html(24 - timer.hours);
@@ -194,7 +199,7 @@
         });
 
         circleDays = new Kinetic.Shape({
-            drawFunc: function(context) {
+            drawFunc: function(context) {                
             	var days_width = $('#' + settings.selectors.canvas_days).width();
                 var radius = days_width/2 - settings.days.borderWidth/2;
                 var x = days_width / 2;
@@ -202,7 +207,12 @@
                 
 
                 context.beginPath();
-                context.arc(x, y, radius, convertToDeg(0), convertToDeg((360 / timer.total) * (timer.total - timer.days)));
+                
+                if (timer.total == 0) {                    
+                    context.arc(x, y, radius, convertToDeg(0), convertToDeg(360));
+                } else {
+                    context.arc(x, y, radius, convertToDeg(0), convertToDeg((360 / timer.total) * (timer.total - timer.days)));
+                }
                 context.fillStrokeShape(this);
 
                 $(settings.selectors.value_days).html(timer.days);
@@ -217,16 +227,15 @@
         daysStage.add(layerDays);
     }
 
-    function startCounters() {
-        var interval = setInterval(function(){
+    function startCounters() {        
+        var interval = setInterval( function() {                        
             if (timer.seconds > 59 ) {
                 if (60 - timer.minutes == 0 && 24 - timer.hours == 0 && timer.days == 0) {
                     clearInterval(interval);
-
-                    $('.clock-item', element).hide();
-                    $('.clock-close').hide();
-                    $('.clock-done').fadeIn();
+                    callbackFunction.call(this); // brings the scope to the callback
+                    return;
                 }
+
                 timer.seconds = 1;
 
                 if (timer.minutes > 59) {
@@ -238,17 +247,19 @@
                             timer.days--;
                             layerDays.draw();
                         }
-                    } else {
+                    } else {                        
                         timer.hours++;
-                    }
+                    }                    
                     layerHours.draw()
                 } else {
                     timer.minutes++;
                 }
+
                 layerMinutes.draw();
-            } else {
+            } else {            
                 timer.seconds++;
             }
+
             layerSeconds.draw();
         }, 1000);
     }
