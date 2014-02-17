@@ -52,6 +52,14 @@ body {
 	width: 100%;
 }
 
+.text .val {
+	font-size: 50px;
+}
+
+.text .type-time {
+	font-size: 20px;
+}
+
 @media (min-width: 768px) and (max-width: 991px) {
 	.clock-item {
 		margin-bottom: 30px;		

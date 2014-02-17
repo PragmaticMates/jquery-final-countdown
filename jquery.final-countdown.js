@@ -40,20 +40,20 @@
                 canvas_days: 'canvas_days'
             },
             seconds: {
-                borderColor: 'rgba(255, 255, 255, 1)',
-                borderWidth: '5'
+                borderColor: '#7995D5',
+                borderWidth: '6'
             },
             minutes: {
-                borderColor: 'rgba(255, 255, 255, 1)',
-                borderWidth: '5'
+                borderColor: '#ACC742',
+                borderWidth: '6'
             },
             hours: {
-                borderColor: 'rgba(255, 255, 255, 1)',
-                borderWidth: '5'
+                borderColor: '#ECEFCB',
+                borderWidth: '6'
             },
             days: {
-                borderColor: 'rgba(255, 255, 255, 1)',
-                borderWidth: '5'
+                borderColor: '#FF9900',
+                borderWidth: '6'
             }
         }, options);
 
