@@ -29,7 +29,7 @@ HTML Template
 
 	                    <div class="text">
 	                        <p class="val">0</p>
-	                        <p class="type_days type-time">DAYS</p>
+	                        <p class="type-days type-time">DAYS</p>
 	                    </div><!-- /.text -->
 	                </div><!-- /.inner -->
 	            </div><!-- /.wrap -->
@@ -42,7 +42,7 @@ HTML Template
 
 	                    <div class="text">
 	                        <p class="val">0</p>
-	                        <p class="type_hours type-time">HOURS</p>
+	                        <p class="type-hours type-time">HOURS</p>
 	                    </div><!-- /.text -->
 	                </div><!-- /.inner -->
 	            </div><!-- /.wrap -->
@@ -55,7 +55,7 @@ HTML Template
 
 	                    <div class="text">
 	                        <p class="val">0</p>
-	                        <p class="type_minutes type-time">MINUTES</p>
+	                        <p class="type-minutes type-time">MINUTES</p>
 	                    </div><!-- /.text -->
 	                </div><!-- /.inner -->
 	            </div><!-- /.wrap -->
@@ -68,7 +68,7 @@ HTML Template
 
 	                    <div class="text">
 	                        <p class="val">0</p>
-	                        <p class="type_seconds type-time">SECONDS</p>
+	                        <p class="type-seconds type-time">SECONDS</p>
 	                    </div><!-- /.text -->
 	                </div><!-- /.inner -->
 	            </div><!-- /.wrap -->
