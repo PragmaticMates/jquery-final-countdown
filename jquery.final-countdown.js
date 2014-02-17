@@ -1,3 +1,11 @@
+/*!
+ * jQuery Final Countdown
+ *
+ * @author Pragmatic Mates, http://pragmaticmates.com
+ * @license GPL 2
+ * @link https://github.com/PragmaticMates/jquery-final-countdown
+ */
+
 (function ($) {
     var settings;
     var timer;
