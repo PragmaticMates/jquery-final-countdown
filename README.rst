@@ -1,8 +1,8 @@
 jQuery Final Countdown
 ======================
 
-http://final-countdown.pragmaticmates.com/demo/index.html
-http://final-countdown.pragmaticmates.com/demo/data-attributes.html
+- http://final-countdown.pragmaticmates.com/demo/index.html
+- http://final-countdown.pragmaticmates.com/demo/data-attributes.html
 
 Requirements
 ------------
