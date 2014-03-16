@@ -99,6 +99,7 @@
 
     function responsive() {
         $(window).load(updateCircles);
+
         $(window).on('redraw', function() {
             switched = false;
             updateCircles();
@@ -106,7 +107,7 @@
         $(window).on('resize', updateCircles);
     }
 
-    function updateCircles() {
+    function updateCircles() {     
         layerSeconds.draw();
         layerMinutes.draw();
         layerHours.draw();
@@ -234,7 +235,6 @@
 
 
                 context.beginPath();
-
                 if (timer.total == 0) {
                     context.arc(x, y, radius, convertToDeg(0), convertToDeg(360));
                 } else {
@@ -254,8 +254,8 @@
         daysStage.add(layerDays);
     }
 
-    function startCounters() {
-        var interval = setInterval( function() {
+    function startCounters() {        
+        var interval = setInterval( function() {                        
             if (timer.seconds > 59 ) {
                 if (60 - timer.minutes == 0 && 24 - timer.hours == 0 && timer.days == 0) {
                     clearInterval(interval);
@@ -274,16 +274,16 @@
                             timer.days--;
                             layerDays.draw();
                         }
-                    } else {
+                    } else {                        
                         timer.hours++;
-                    }
+                    }                    
                     layerHours.draw()
                 } else {
                     timer.minutes++;
                 }
 
                 layerMinutes.draw();
-            } else {
+            } else {            
                 timer.seconds++;
             }
 
