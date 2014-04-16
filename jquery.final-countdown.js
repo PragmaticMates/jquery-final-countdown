@@ -2,7 +2,7 @@
  * jQuery Final Countdown
  *
  * @author Pragmatic Mates, http://pragmaticmates.com
- * @version 1.1
+ * @version 1.1.1
  * @license GPL 2
  * @link https://github.com/PragmaticMates/jquery-final-countdown
  */
@@ -259,7 +259,9 @@
             if (timer.seconds > 59 ) {
                 if (60 - timer.minutes == 0 && 24 - timer.hours == 0 && timer.days == 0) {
                     clearInterval(interval);
-                    callbackFunction.call(this); // brings the scope to the callback
+                    if (callbackFunction !== undefined) {
+                        callbackFunction.call(this); // brings the scope to the callback
+                    }
                     return;
                 }
 
