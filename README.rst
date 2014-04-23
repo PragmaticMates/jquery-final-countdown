@@ -32,7 +32,7 @@ HTML Template
 	        <div class="clock-item clock-days countdown-time-value col-sm-6 col-md-3">
 	            <div class="wrap">
 	                <div class="inner">
-	                    <div id="canvas_days" class="clock-canvas"></div>
+	                    <div id="canvas-days" class="clock-canvas"></div>
 
 	                    <div class="text">
 	                        <p class="val">0</p>
@@ -45,7 +45,7 @@ HTML Template
 	        <div class="clock-item clock-hours countdown-time-value col-sm-6 col-md-3">
 	            <div class="wrap">
 	                <div class="inner">
-	                    <div id="canvas_hours" class="clock-canvas"></div>
+	                    <div id="canvas-hours" class="clock-canvas"></div>
 
 	                    <div class="text">
 	                        <p class="val">0</p>
@@ -58,7 +58,7 @@ HTML Template
 	        <div class="clock-item clock-minutes countdown-time-value col-sm-6 col-md-3">
 	            <div class="wrap">
 	                <div class="inner">
-	                    <div id="canvas_minutes" class="clock-canvas"></div>
+	                    <div id="canvas-minutes" class="clock-canvas"></div>
 
 	                    <div class="text">
 	                        <p class="val">0</p>
@@ -71,7 +71,7 @@ HTML Template
 	        <div class="clock-item clock-seconds countdown-time-value col-sm-6 col-md-3">
 	            <div class="wrap">
 	                <div class="inner">
-	                    <div id="canvas_seconds" class="clock-canvas"></div>
+	                    <div id="canvas-seconds" class="clock-canvas"></div>
 
 	                    <div class="text">
 	                        <p class="val">0</p>
