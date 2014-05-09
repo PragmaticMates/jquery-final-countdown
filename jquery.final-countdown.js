@@ -2,44 +2,29 @@
  * jQuery Final Countdown
  *
  * @author Pragmatic Mates, http://pragmaticmates.com
- * @version 1.1.1
+ * @co-author Sewdn, http://redandivory.com
+ * @version 1.2.0
  * @license GPL 2
  * @link https://github.com/PragmaticMates/jquery-final-countdown
  */
 
 (function ($) {
-    var settings;
-    var timer;
-
-    var circleSeconds;
-    var circleMinutes;
-    var circleHours;
-    var circleDays;
-
-    var layerSeconds;
-    var layerMinutes;
-    var layerHours;
-    var layerDays;
-
-    var element;
-    var callbackFunction;
-
+    var clocks = [];
+    var started = false;
     $.fn.final_countdown = function(options, callback) {
-        element = $(this);        
+        var element = $(this);
 
         var defaults = $.extend({
-            start: undefined,
-            end: undefined,
-            now: undefined,
+            start: '1362139200',
+            end: '1388461320',
+            now: '1387461319',
             selectors: {
-                value_seconds: '.clock-seconds .val',
-                canvas_seconds: 'canvas-seconds',
-                value_minutes: '.clock-minutes .val',
-                canvas_minutes: 'canvas-minutes',
-                value_hours: '.clock-hours .val',
-                canvas_hours: 'canvas-hours',
-                value_days: '.clock-days .val',
-                canvas_days: 'canvas-days'
+                seconds: '.clock-seconds',
+                minutes: '.clock-minutes',
+                hours: '.clock-hours',
+                days: '.clock-days',
+                canvas: '.clock-canvas',
+                val: '.val'
             },
             seconds: {
                 borderColor: '#7995D5',
@@ -59,237 +44,183 @@
             }
         }, options);
 
-        settings = $.extend({}, defaults, options);
+        var settings = $.extend({}, defaults, options);
 
-        if (settings.start === undefined) {
-            settings.start = element.data('start');
-        }
+        addClock(element, settings, callback);
 
-        if (settings.end === undefined) {
-            settings.end = element.data('end');
+        if(!started){
+            startCounters();
+            responsive();
+            started = true;
         }
-
-        if (settings.now === undefined) {
-            settings.now = element.data('now');
-        }
-
-        if (element.data('border-color')) {
-            settings.seconds.borderColor = settings.minutes.borderColor = settings.hours.borderColor = settings.days.borderColor = element.data('border-color');
-        }
-
-        if (settings.now < settings.start ) {
-            settings.start = settings.now;
-            settings.end = settings.now;
-        }
-
-        if (settings.now > settings.end) {
-            settings.start = settings.now;
-            settings.end = settings.now;
-        }
-
-        if (typeof callback == 'function') { // make sure the callback is a function
-            callbackFunction = callback;
-        }
-        
-        responsive();
-        dispatchTimer();
-        prepareCounters();
-        startCounters();
     };
+
+    function addClock(element, settings, cb){
+        var clock = {
+            element: element,
+            settings: settings,
+            layers: {}
+        };
+        if (typeof cb == 'function') { // make sure the callback is a function
+            clock.callbackFunction = cb;
+        }
+
+        dispatchTimer(clock);
+        prepareCounters(clock);
+
+        clocks.push(clock);
+        return clock;
+    }
 
     function responsive() {
         $(window).load(updateCircles);
-
         $(window).on('redraw', function() {
             switched = false;
             updateCircles();
         });
         $(window).on('resize', updateCircles);
+        updateCircles();
     }
 
-    function updateCircles() {     
-        layerSeconds.draw();
-        layerMinutes.draw();
-        layerHours.draw();
-        layerDays.draw();
+    function updateCircles() {
+        var objects = ['seconds', 'minutes', 'hours', 'days'];
+        var objectsLength = objects.length;
+        var clocksLength = clocks.length;
+        for (var i = 0; i < clocksLength; i++) {
+            var clock = clocks[i];
+            for (var j = 0; j < objectsLength; j++) {
+                var object = objects[j];
+                if(clock.layers && clock.layers[object] && clock.layers[object].draw)
+                    clock.layers[object].draw();
+            }
+        }
     }
 
     function convertToDeg(degree) {
-        return (Math.PI/180)*degree - (Math.PI/180)*90
+        return (Math.PI/180)*degree - (Math.PI/180)*90;
     }
 
-    function dispatchTimer() {
-        timer = {
+    function dispatchTimer(clock) {
+        var settings = clock.settings;
+        clock.timer = {
             total: Math.floor((settings.end - settings.start) / 86400),
             days: Math.floor((settings.end - settings.now ) / 86400),
             hours: 24 - Math.floor(((settings.end - settings.now) % 86400) / 3600),
             minutes: 60 - Math.floor((((settings.end - settings.now) % 86400) % 3600) / 60),
             seconds: 60 - Math.floor((((settings.end - settings.now) % 86400) % 3600) % 60 )
+        };
+    }
+
+    function prepareCounters(clock) {
+
+        var durations = {
+            'seconds': 60,
+            'minutes': 60,
+            'hours': 24
+        };
+        var timer = clock.timer;
+
+        var objects = ['seconds', 'minutes', 'hours', 'days'];
+        var objectsLength = objects.length;
+        for (var i = 0; i < objectsLength; i++) {
+            var object = objects[i];
+            var element = clock.element.find([
+                clock.settings.selectors[object],
+                clock.settings.selectors.canvas
+                ].join(" "));
+            var width = $(element).width();
+
+            var stage = new Kinetic.Stage({
+                container: $(element).attr('id'),
+                width: width,
+                height: width
+            });
+
+            var shape = new Kinetic.Shape({
+                drawFunc: function(clock, object){return function(context) {
+                    var radius = width / 2 - clock.settings[object].borderWidth / 2;
+                    var x = width / 2;
+                    var y = width / 2;
+
+                    context.beginPath();
+
+                    var deg, value;
+                    if(!!durations[object]){
+                        deg = timer[object] * (360 / durations[object]);
+                        value = durations[object] - timer[object];
+                    } else {
+                        if (timer.total === 0) {
+                            deg = 360;
+                        } else {
+                            deg = (360 / timer.total) * (timer.total - timer[object]);
+                        }
+                        value = timer[object];
+                    }
+
+                    context.arc(x, y, radius, convertToDeg(0), convertToDeg(deg));
+                    context.fillStrokeShape(this);
+
+                    $(clock.element.find([
+                        clock.settings.selectors[object],
+                        clock.settings.selectors.val
+                    ].join(" "))).html(value);
+                }}(clock, object),
+                stroke: clock.settings[object].borderColor,
+                strokeWidth: clock.settings[object].borderWidth
+            });
+            var layer = new Kinetic.Layer();
+            layer.add(shape);
+            stage.add(layer);
+            clock.layers[object] = layer;
         }
     }
 
-    function prepareCounters() {
-        // Seconds
-        var seconds_width = $('#' + settings.selectors.canvas_seconds).width()
-        var secondsStage = new Kinetic.Stage({
-            container: settings.selectors.canvas_seconds,
-            width: seconds_width,
-            height: seconds_width
-        });
-
-        circleSeconds = new Kinetic.Shape({
-            drawFunc: function(context) {
-                var seconds_width = $('#' + settings.selectors.canvas_seconds).width()
-                var radius = seconds_width / 2 - settings.seconds.borderWidth / 2;
-                var x = seconds_width / 2;
-                var y = seconds_width / 2;
-
-                context.beginPath();
-                context.arc(x, y, radius, convertToDeg(0), convertToDeg(timer.seconds * 6));
-                context.fillStrokeShape(this);
-
-                $(settings.selectors.value_seconds).html(60 - timer.seconds);
-            },
-            stroke: settings.seconds.borderColor,
-            strokeWidth: settings.seconds.borderWidth
-        });
-
-        layerSeconds = new Kinetic.Layer();
-        layerSeconds.add(circleSeconds);
-        secondsStage.add(layerSeconds);
-
-        // Minutes
-        var minutes_width = $('#' + settings.selectors.canvas_minutes).width();
-        var minutesStage = new Kinetic.Stage({
-            container: settings.selectors.canvas_minutes,
-            width: minutes_width,
-            height: minutes_width
-        });
-
-        circleMinutes = new Kinetic.Shape({
-            drawFunc: function(context) {
-                var minutes_width = $('#' + settings.selectors.canvas_minutes).width();
-                var radius = minutes_width / 2 - settings.minutes.borderWidth / 2;
-                var x = minutes_width / 2;
-                var y = minutes_width / 2;
-
-                context.beginPath();
-                context.arc(x, y, radius, convertToDeg(0), convertToDeg(timer.minutes * 6));
-                context.fillStrokeShape(this);
-
-                $(settings.selectors.value_minutes).html(60 - timer.minutes);
-
-            },
-            stroke: settings.minutes.borderColor,
-            strokeWidth: settings.minutes.borderWidth
-        });
-
-        layerMinutes = new Kinetic.Layer();
-        layerMinutes.add(circleMinutes);
-        minutesStage.add(layerMinutes);
-
-        // Hours
-        var hours_width = $('#' + settings.selectors.canvas_hours).width();
-        var hoursStage = new Kinetic.Stage({
-            container: settings.selectors.canvas_hours,
-            width: hours_width,
-            height: hours_width
-        });
-
-        circleHours = new Kinetic.Shape({
-            drawFunc: function(context) {
-                var hours_width = $('#' + settings.selectors.canvas_hours).width();
-                var radius = hours_width / 2 - settings.hours.borderWidth/2;
-                var x = hours_width / 2;
-                var y = hours_width / 2;
-
-                context.beginPath();
-                context.arc(x, y, radius, convertToDeg(0), convertToDeg(timer.hours * 360 / 24));
-                context.fillStrokeShape(this);
-
-                $(settings.selectors.value_hours).html(24 - timer.hours);
-
-            },
-            stroke: settings.hours.borderColor,
-            strokeWidth: settings.hours.borderWidth
-        });
-
-        layerHours = new Kinetic.Layer();
-        layerHours.add(circleHours);
-        hoursStage.add(layerHours);
-
-        // Days
-        var days_width = $('#' + settings.selectors.canvas_days).width();
-        var daysStage = new Kinetic.Stage({
-            container: settings.selectors.canvas_days,
-            width: days_width,
-            height: days_width
-        });
-
-        circleDays = new Kinetic.Shape({
-            drawFunc: function(context) {
-                var days_width = $('#' + settings.selectors.canvas_days).width();
-                var radius = days_width/2 - settings.days.borderWidth/2;
-                var x = days_width / 2;
-                var y = days_width / 2;
-
-
-                context.beginPath();
-                if (timer.total == 0) {
-                    context.arc(x, y, radius, convertToDeg(0), convertToDeg(360));
-                } else {
-                    context.arc(x, y, radius, convertToDeg(0), convertToDeg((360 / timer.total) * (timer.total - timer.days)));
-                }
-                context.fillStrokeShape(this);
-
-                $(settings.selectors.value_days).html(timer.days);
-
-            },
-            stroke: settings.days.borderColor,
-            strokeWidth: settings.days.borderWidth
-        });
-
-        layerDays = new Kinetic.Layer();
-        layerDays.add(circleDays);
-        daysStage.add(layerDays);
+    function draw(object){
+        //for all clocks, update the specific shape
+        var clocksLength = clocks.length;
+        for (var i = 0; i < clocksLength; i++) {
+            var clock = clocks[i];
+            clock.layers[object].draw();
+        }
     }
 
-    function startCounters() {        
-        var interval = setInterval( function() {                        
-            if (timer.seconds > 59 ) {
-                if (60 - timer.minutes == 0 && 24 - timer.hours == 0 && timer.days == 0) {
-                    clearInterval(interval);
-                    if (callbackFunction !== undefined) {
-                        callbackFunction.call(this); // brings the scope to the callback
+    function startCounters() {
+        var interval = setInterval( function() {
+            var clocksLength = clocks.length;
+            for (var i = 0; i < clocksLength; i++) {
+                var clock = clocks[i];
+                var timer = clock.timer;
+                if (timer.seconds > 59 ) {
+                    if (60 - timer.minutes === 0 && 24 - timer.hours === 0 && timer.days === 0) {
+                        clearInterval(interval);
+                        clock.callbackFunction.call(this); // brings the scope to the callback
+                        return;
                     }
-                    return;
-                }
 
-                timer.seconds = 1;
+                    timer.seconds = 1;
 
-                if (timer.minutes > 59) {
-                    timer.minutes = 1;
-                    layerMinutes.draw();
-                    if (timer.hours > 23) {
-                        timer.hours = 1;
-                        if (timer.days > 0) {
-                            timer.days--;
-                            layerDays.draw();
+                    if (timer.minutes > 59) {
+                        timer.minutes = 1;
+                        //draw('minutes');
+                        if (timer.hours > 23) {
+                            timer.hours = 1;
+                            if (timer.days > 0) {
+                                timer.days--;
+                                clock.layers['days'] && clock.layers['days'].draw();
+                            }
+                        } else {
+                            timer.hours++;
                         }
-                    } else {                        
-                        timer.hours++;
-                    }                    
-                    layerHours.draw()
+                        clock.layers['hours'] && clock.layers['hours'].draw();
+                    } else {
+                        timer.minutes++;
+                    }
+                    clock.layers['minutes'] && clock.layers['minutes'].draw();
                 } else {
-                    timer.minutes++;
+                    timer.seconds++;
                 }
-
-                layerMinutes.draw();
-            } else {            
-                timer.seconds++;
+                clock.layers.seconds && clock.layers.seconds.draw();
             }
-
-            layerSeconds.draw();
         }, 1000);
     }
 })(jQuery);
