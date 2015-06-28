@@ -40,24 +40,24 @@
                 canvas_minutes: '.canvas-minutes',
                 value_hours: '.clock-hours .val',
                 canvas_hours: '.canvas-hours',
-                value_days: '.clock-hours .val',
-                canvas_days: '.canvas-hours'
+                value_days: '.clock-days .val',
+                canvas_days: '.canvas-days'
             },
             seconds: {
-                borderColor: '#7995D5',
-                borderWidth: '6'
+                borderColor: '#6d8cd2',
+                borderWidth: '3'
             },
             minutes: {
-                borderColor: '#ACC742',
-                borderWidth: '6'
+                borderColor: '#a6c335',
+                borderWidth: '3'
             },
             hours: {
-                borderColor: '#ECEFCB',
-                borderWidth: '6'
+                borderColor: '#bd0404',
+                borderWidth: '3'
             },
             days: {
-                borderColor: '#ECEFCB',
-                borderWidth: '6'
+                borderColor: '#FF9900',
+                borderWidth: '3'
             }
         }, options);
 
@@ -108,6 +108,7 @@
         set : function (startTime, endTime, currentTime) {
             this.timer = {
                 total: Math.floor((endTime - startTime) / 86400),
+                days: Math.floor((endTime - currentTime) / 86400),
                 hours: 24 - Math.floor(((endTime - currentTime) % 86400) / 3600),
                 minutes: 60 - Math.floor((((endTime - currentTime) % 86400) % 3600) / 60),
                 seconds: 60 - Math.floor((((endTime - currentTime) % 86400) % 3600) % 60 )
@@ -277,11 +278,14 @@
                     y = daysWidth / 2;
 
                     context.beginPath();
-
-                    context.arc(x, y, radius, convertToDeg(0), convertToDeg(self.timer.days * 360 / 24));
+					if (self.timer.total == 0) {
+						context.arc(x, y, radius, convertToDeg(0), convertToDeg(360));
+					} else {
+						context.arc(x, y, radius, convertToDeg(0), convertToDeg((360 * (self.timer.days / 365))));
+					}
                     context.fillStrokeShape(this);
 
-                    self.element.find(self.settings.selectors.value_Days).html(24 - self.timer.days);
+                    self.element.find(self.settings.selectors.value_days).html(self.timer.days);
                 },
                 stroke: self.settings.days.borderColor,
                 strokeWidth: self.settings.days.borderWidth
