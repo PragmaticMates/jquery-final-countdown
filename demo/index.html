@@ -77,11 +77,15 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script type="text/javascript" src="js/kinetic.js"></script>
 <script type="text/javascript" src="../jquery.final-countdown.js"></script>
-<script type="text/javascript">
-	$('.countdown').final_countdown({
-        'start': 1362139200,
-        'end': 1388461320,
-        'now': 1387461319        
+<script type="text/javascript">  
+    $('document').ready(function() {
+        'use strict';
+        
+    	$('.countdown').final_countdown({
+            'start': 1362139200,
+            'end': 1388461320,
+            'now': 1387461319        
+        });
     });
 </script>
 
