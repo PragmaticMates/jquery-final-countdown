@@ -27,6 +27,11 @@
     $.fn.final_countdown = function(options, callback) {
         element = $(this);        
 
+        // Element is not visibile
+        if ( ! element.is(':visible') ) {
+            return;
+        }
+
         var defaults = $.extend({
             start: undefined,
             end: undefined,
