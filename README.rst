@@ -22,6 +22,18 @@ Javascript Code
 			// Finish Callback
 		});
 	});
+	
+	//Example using date objects
+	var now = new Date(2013,6,20);
+    	var end = new Date(2014,7,10);
+    	var start = new Date(2013,5,20);
+    	var ratio = 1000;
+
+    	$('.countdown').final_countdown({
+        	'start': start.getTime()/r,
+        	'end': end.getTime()/r,
+        	'now': now.getTime()/r        
+    	});
 
 HTML Template
 -------------
