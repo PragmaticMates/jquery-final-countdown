@@ -25,7 +25,7 @@
     var callbackFunction;
 
     $.fn.final_countdown = function(options, callback) {
-        element = $(this);        
+        element = $(this);
 
         // Element is not visibile
         if ( ! element.is(':visible') ) {
@@ -95,7 +95,7 @@
         if (typeof callback == 'function') { // make sure the callback is a function
             callbackFunction = callback;
         }
-        
+
         responsive();
         dispatchTimer();
         prepareCounters();
@@ -112,11 +112,11 @@
         $(window).on('resize', updateCircles);
     }
 
-    function updateCircles() {     
+    function updateCircles() {
         layerSeconds.draw();
         layerMinutes.draw();
         layerHours.draw();
-        layerDays.draw();
+        layerDays ? layerDays.draw() : false;
     }
 
     function convertToDeg(degree) {
@@ -223,44 +223,46 @@
         layerHours.add(circleHours);
         hoursStage.add(layerHours);
 
-        // Days
-        var days_width = $('#' + settings.selectors.canvas_days).width();
-        var daysStage = new Kinetic.Stage({
-            container: settings.selectors.canvas_days,
-            width: days_width,
-            height: days_width
-        });
+        if (settings.selectors.canvas_days) {
+            // Days
+            var days_width = $('#' + settings.selectors.canvas_days).width();
+            var daysStage = new Kinetic.Stage({
+                container: settings.selectors.canvas_days,
+                width: days_width,
+                height: days_width
+            });
 
-        circleDays = new Kinetic.Shape({
-            drawFunc: function(context) {
-                var days_width = $('#' + settings.selectors.canvas_days).width();
-                var radius = days_width/2 - settings.days.borderWidth/2;
-                var x = days_width / 2;
-                var y = days_width / 2;
+            circleDays = new Kinetic.Shape({
+                drawFunc: function(context) {
+                    var days_width = $('#' + settings.selectors.canvas_days).width();
+                    var radius = days_width/2 - settings.days.borderWidth/2;
+                    var x = days_width / 2;
+                    var y = days_width / 2;
 
 
-                context.beginPath();
-                if (timer.total == 0) {
-                    context.arc(x, y, radius, convertToDeg(0), convertToDeg(360));
-                } else {
-                    context.arc(x, y, radius, convertToDeg(0), convertToDeg((360 / timer.total) * (timer.total - timer.days)));
-                }
-                context.fillStrokeShape(this);
+                    context.beginPath();
+                    if (timer.total == 0) {
+                        context.arc(x, y, radius, convertToDeg(0), convertToDeg(360));
+                    } else {
+                        context.arc(x, y, radius, convertToDeg(0), convertToDeg((360 / timer.total) * (timer.total - timer.days)));
+                    }
+                    context.fillStrokeShape(this);
 
-                $(settings.selectors.value_days).html(timer.days);
+                    $(settings.selectors.value_days).html(timer.days);
 
-            },
-            stroke: settings.days.borderColor,
-            strokeWidth: settings.days.borderWidth
-        });
+                },
+                stroke: settings.days.borderColor,
+                strokeWidth: settings.days.borderWidth
+            });
 
-        layerDays = new Kinetic.Layer();
-        layerDays.add(circleDays);
-        daysStage.add(layerDays);
+            layerDays = new Kinetic.Layer();
+            layerDays.add(circleDays);
+            daysStage.add(layerDays);
+        }
     }
 
-    function startCounters() {        
-        var interval = setInterval( function() {                        
+    function startCounters() {
+        var interval = setInterval( function() {
             if (timer.seconds > 59 ) {
                 if (60 - timer.minutes == 0 && 24 - timer.hours == 0 && timer.days == 0) {
                     clearInterval(interval);
@@ -281,16 +283,16 @@
                             timer.days--;
                             layerDays.draw();
                         }
-                    } else {                        
+                    } else {
                         timer.hours++;
-                    }                    
+                    }
                     layerHours.draw()
                 } else {
                     timer.minutes++;
                 }
 
                 layerMinutes.draw();
-            } else {            
+            } else {
                 timer.seconds++;
             }
 
